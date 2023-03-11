@@ -15,6 +15,7 @@ async def on_ready():
 async def play(interaction: discord.Interaction):
     await interaction.response.send_message("{placeholder}")
 
+
 @client.command()
 async def play(ctx, *args):
     arguments = ', '.join(args)
