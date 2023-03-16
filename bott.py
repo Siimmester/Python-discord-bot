@@ -1,7 +1,7 @@
 import tokens
 import discord
-# import random
-# from monthlyVolume import mVolList
+import random
+from monthlyVolume import mVolList
 from discord.ext import commands
 
 client = commands.Bot(command_prefix='$', intents=discord.Intents.all())
@@ -17,20 +17,43 @@ async def on_ready():
 class Buttons(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.value = None
+        self.user_higher = True
 
     @discord.ui.button(label="Higher", style=discord.ButtonStyle.green)
     async def higher(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.channel.send(content="Higher")
+        self.user_higher = True
+
 
     @discord.ui.button(label="Lower", style=discord.ButtonStyle.red)
     async def lower(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.channel.send(content="Lower")
+        self.user_higher = False
 
 
 @client.tree.command(name="play", description='Play a game of "higher or lower"')
 async def play(interaction: discord.Interaction):
-    await interaction.response.send_message(content="Higher or Lower?", view=Buttons())
+
+    score_counter = 0
+    have_lost = True
+    while have_lost:
+        interaction.defer()
+        a = random.randint(0, 66)
+        c = random.randint(0, 66)
+        while a == c or mVolList[a][2] == mVolList[c][2]:
+            c = random.randint(0, 66)
+        await interaction.channel.send(
+            f"Which is more popular: \n {mVolList[a][0]} --- {mVolList[a][1]} searches a month --- or --- {mVolList[c][0]} --- ? searches a month")
+        await interaction.response.send_message(content="Higher or Lower?", view=Buttons())
+        if (mVolList[a][2] < mVolList[c][2]) == Buttons().user_higher:
+            await interaction.channel.send(content=f'you are correct {mVolList[c][1]}')
+
+            score_counter += 1
+        else:
+            have_lost = False
+        a = random.randint(0, 66)
+        c = random.randint(0, 66)
+        while a == c or mVolList[a][2] == mVolList[c][2]:
+            c = random.randint(0, 66)
+    await interaction.channel.send(f"You got {str(score_counter)} Points")
 
 
 @client.command()
