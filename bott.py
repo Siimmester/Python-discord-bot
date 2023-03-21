@@ -61,7 +61,31 @@ async def play(interaction: discord.Interaction):
 
 @client.command()
 async def play(ctx):
-    await ctx.send(f"please do /play I can't be bothered to make this command")
+    a = random.randint(0, 66)
+    c = random.randint(0, 66)
+    while a == c or mVolList[a][2] == mVolList[c][2]:
+        c = random.randint(0, 66)
+    score_counter = 0
+    have_lost = True
+    await ctx.send(f"---")
+    while have_lost:
+        buttons = Buttons()
+        await ctx.send(
+            f"`Which is more popular: \n {mVolList[a][0]} --- {mVolList[a][1]} searches a month --- or --- {mVolList[c][0]} --- ? searches a month`")
+        await ctx.send(content=f"Is *{mVolList[c][0]}* Higher or Lower?", view=buttons)
+        await buttons.wait()
+        if (mVolList[a][2] < mVolList[c][2]) == buttons.user_higher:
+            await ctx.send(content=f'`you are correct {mVolList[c][1]}`')
+
+            score_counter += 1
+        else:
+            have_lost = False
+        a = c
+        c = random.randint(0, 66)
+        while a == c or mVolList[a][2] == mVolList[c][2]:
+            c = random.randint(0, 66)
+    await ctx.send(f"You got {str(score_counter)} Points")
+    await ctx.send(f"---")
 
 
 client.run(tokens.Discord_Token)
