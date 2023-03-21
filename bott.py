@@ -16,8 +16,8 @@ async def on_ready():
 
 class Buttons(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=5)
-        self.user_higher = True
+        super().__init__(timeout=None)
+        self.user_higher = None
 
     @discord.ui.button(label="Higher", style=discord.ButtonStyle.green)
     async def higher(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -33,19 +33,18 @@ class Buttons(discord.ui.View):
 @client.tree.command(name="play", description='Play a game of "higher or lower"')
 async def play(interaction: discord.Interaction):
     score_counter = 0
-    buttons = Buttons()
     have_lost = True
+    await interaction.channel.send(f"---")
     while have_lost:
+        buttons = Buttons()
         a = random.randint(0, 66)
         c = random.randint(0, 66)
         while a == c or mVolList[a][2] == mVolList[c][2]:
             c = random.randint(0, 66)
         await interaction.channel.send(
             f"`Which is more popular: \n {mVolList[a][0]} --- {mVolList[a][1]} searches a month --- or --- {mVolList[c][0]} --- ? searches a month`")
-        await interaction.response.send_message(content="Higher or Lower?", view=buttons)
-        print("1")
+        await interaction.channel.send(content=f"Is *{mVolList[c][0]}* Higher or Lower?", view=buttons)
         await buttons.wait()
-        print("2")
         if (mVolList[a][2] < mVolList[c][2]) == buttons.user_higher:
             await interaction.channel.send(content=f'`you are correct {mVolList[c][1]}`')
 
@@ -57,11 +56,12 @@ async def play(interaction: discord.Interaction):
         while a == c or mVolList[a][2] == mVolList[c][2]:
             c = random.randint(0, 66)
     await interaction.channel.send(f"You got {str(score_counter)} Points")
+    await interaction.channel.send(f"---")
 
 
 @client.command()
-async def play(ctx, arg):
-    await ctx.send(f'{ctx.guild.get_member(int(arg))}')
+async def play(ctx):
+    await ctx.send(f"please do /play I can't be bothered to make this command")
 
 
 client.run(tokens.Discord_Token)
