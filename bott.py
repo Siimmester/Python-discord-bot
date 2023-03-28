@@ -37,9 +37,9 @@ async def play(interaction: discord.Interaction):
     while a == c or mVolList[a][2] == mVolList[c][2]:
         c = random.randint(0, 66)
     score_counter = 0
-    have_lost = True
+    have_not_lost = True
     await interaction.channel.send(f"---")
-    while have_lost:
+    while have_not_lost:
         buttons = Buttons()
         await interaction.channel.send(
             f"`Which is more popular: \n {mVolList[a][0]} --- {mVolList[a][1]} searches a month --- or --- {mVolList[c][0]} --- ? searches a month`")
@@ -50,7 +50,7 @@ async def play(interaction: discord.Interaction):
 
             score_counter += 1
         else:
-            have_lost = False
+            have_not_lost = False
         a = c
         c = random.randint(0, 66)
         while a == c or mVolList[a][2] == mVolList[c][2]:
@@ -66,9 +66,9 @@ async def play(ctx):
     while a == c or mVolList[a][2] == mVolList[c][2]:
         c = random.randint(0, 66)
     score_counter = 0
-    have_lost = True
+    have_not_lost = True
     await ctx.send(f"---")
-    while have_lost:
+    while have_not_lost:
         buttons = Buttons()
         await ctx.send(
             f"`Which is more popular: \n {mVolList[a][0]} --- {mVolList[a][1]} searches a month --- or --- {mVolList[c][0]} --- ? searches a month`")
@@ -79,7 +79,7 @@ async def play(ctx):
 
             score_counter += 1
         else:
-            have_lost = False
+            have_not_lost = False
         a = c
         c = random.randint(0, 66)
         while a == c or mVolList[a][2] == mVolList[c][2]:
